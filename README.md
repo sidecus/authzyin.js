@@ -9,7 +9,7 @@ Simply define your policies, initialize and authorize!
 There is also a server library [authzyin](https://github.com/sidecus/authzyin). Using **authzyin.js** together with **authzyin** can further simplify your authorization story across server and client.
 
 
-[![NPM](https://img.shields.io/npm/v/authzyin.js.svg)](https://www.npmjs.com/package/authzyin.js) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/authzyin.js.svg)](https://www.npmjs.com/package/authzyin.js) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) ![CI](https://github.com/sidecus/authzyin.js/workflows/CI/badge.svg)
 
 ## Install
 ```Shell
