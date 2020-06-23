@@ -1,10 +1,10 @@
 {
   "name": "authzyin.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Javascript library to enable policy based authorization in React.",
   "author": "sidecus",
   "license": "MIT",
-  "repository": "sidecus/authzyin",
+  "repository": "sidecus/authzyin.js",
   "keywords": [
     "react",
     "policy",
