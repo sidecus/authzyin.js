@@ -1,0 +1,109 @@
+{
+    "userContext": {
+        "userId": "995ca7f1-4927-4f8d-a726-405a1a184310",
+        "userName": "John Doe",
+        "roles": [
+            "Customer"
+        ]
+    },
+    "policies": [
+        {
+            "name": "IsCustomer",
+            "requirements": [
+                {
+                    "allowedRoles": [
+                        "Customer"
+                    ],
+                    "operator": -1
+                }
+            ]
+        },
+        {
+            "name": "CanEnterBar",
+            "requirements": [
+                {
+                    "allowedRoles": [
+                        "Customer"
+                    ],
+                    "operator": -1
+                },
+                {
+                    "children": [
+                        {
+                            "constValue": true,
+                            "dataJPath": "$.WithDriversLicense",
+                            "resourceJPath": "$.Value",
+                            "direction": 1,
+                            "operator": 2
+                        },
+                        {
+                            "constValue": true,
+                            "dataJPath": "$.WithPassport",
+                            "resourceJPath": "$.Value",
+                            "direction": 1,
+                            "operator": 2
+                        }
+                    ],
+                    "operator": 1
+                },
+                {
+                    "constValue": 20,
+                    "dataJPath": "$.Age",
+                    "resourceJPath": "$.Value",
+                    "direction": 1,
+                    "operator": 3
+                },
+                {
+                    "dataJPath": "$.PaymentMethods[*].Type",
+                    "resourceJPath": "$.AcceptedPaymentMethods[0]",
+                    "direction": 1,
+                    "operator": 5
+                }
+            ]
+        },
+        {
+            "name": "MeetsAgeRangeLimit",
+            "requirements": [
+                {
+                    "allowedRoles": [
+                        "Customer"
+                    ],
+                    "operator": -1
+                },
+                {
+                    "dataJPath": "$.Age",
+                    "resourceJPath": "$.MinAge",
+                    "direction": 1,
+                    "operator": 4
+                },
+                {
+                    "dataJPath": "$.Age",
+                    "resourceJPath": "$.MaxAge",
+                    "direction": 2,
+                    "operator": 4
+                },
+                {
+                    "dataJPath": "$.PaymentMethods[*].Type",
+                    "resourceJPath": "$.AcceptedPaymentMethods[0]",
+                    "direction": 1,
+                    "operator": 5
+                }
+            ]
+        }
+    ],
+    "data": {
+        "age": 40,
+        "withDriversLicense": false,
+        "withPassport": true,
+        "paymentMethods": [
+            {
+                "type": "Cash",
+                "credit": 20
+            },
+            {
+                "type": "Visa",
+                "credit": 20
+            }
+        ]
+    }
+}

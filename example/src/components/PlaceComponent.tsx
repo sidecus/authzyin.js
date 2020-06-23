@@ -1,0 +1,61 @@
+import * as React from 'react';
+import { makeStyles, Typography, Button } from '@material-ui/core';
+import { useAppBoundActions } from '../store/actions';
+import { Place, IsAgeLimitedPlace, IsBar } from '../api/Contract';
+import { Severity } from '../store/store';
+import { LightTooltip } from './LightTooltip';
+import LocalBarIcon from '@material-ui/icons/LocalBar';
+import WeekendIcon from '@material-ui/icons/Weekend';
+import { useAuthorize } from 'authzyin.js';
+
+const useStyles = makeStyles((theme) => ({
+    button: {
+      margin: theme.spacing(1),
+    },
+}));
+
+export const PlaceComponent = ({ place }: { place: Place }) => {
+    const classes = useStyles();
+    const { setAlert, setCurrentPlace, enterPlace } = useAppBoundActions();
+    const authorize = useAuthorize();
+    const authorized = authorize(place.policy, place);
+
+    const handlePlaceChange = () => {
+        setCurrentPlace(-1);
+        if (authorized) {
+            // invoke server api if client authorization succeeded or sneak in option is selected
+            enterPlace(place);
+        } else {
+            console.error(`Entering "${place.name}": not authorized`);
+            setAlert({
+                severity: Severity.Warn,
+                message: `Authorization failed - "${place.name}" forbidden by policy "${place.policy}"`,
+            });
+        }
+    }
+
+    return (
+        <div>
+            <LightTooltip key={place.id} placement='top' arrow
+                title={
+                    <React.Fragment>
+                        <Typography color="inherit">{place.name}</Typography>
+                        <Typography color="secondary">{`accepts ${place.acceptedPaymentMethods[0].toString()}`}</Typography>
+                        <Typography color="secondary">{IsAgeLimitedPlace(place) && `Age:${place.minAge}-${place.maxAge}`}</Typography>
+                        <Typography color={authorized ? "primary" : "error"}>{authorized ? 'Authorized' : 'Not authorized'}</Typography>
+                    </React.Fragment>
+                }
+            >
+                <Button
+                    variant="contained"
+                    className={classes.button}
+                    color = {authorized ? "primary" : "secondary"}
+                    startIcon={IsBar(place) ? <LocalBarIcon/> : <WeekendIcon/>}
+                    onClick={() => handlePlaceChange()}
+                >
+                    {place.name}
+                </Button>
+            </LightTooltip>
+        </div>
+    );
+};
