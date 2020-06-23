@@ -1,0 +1,49 @@
+[
+    {
+        "policy": "CanEnterBar",
+        "hasHappyHour": true,
+        "id": 0,
+        "name": "DarkRavern Bar",
+        "acceptedPaymentMethods": [
+            "Visa"
+        ]
+    },
+    {
+        "policy": "CanEnterBar",
+        "hasHappyHour": true,
+        "id": 1,
+        "name": "BlueSky Bar",
+        "acceptedPaymentMethods": [
+            "Cash"
+        ]
+    },
+    {
+        "policy": "CanEnterBar",
+        "hasHappyHour": true,
+        "id": 2,
+        "name": "OneWorld Bar",
+        "acceptedPaymentMethods": [
+            "MasterCard"
+        ]
+    },
+    {
+        "policy": "MeetsAgeRangeLimit",
+        "minAge": 40,
+        "maxAge": 55,
+        "id": 3,
+        "name": "MiddleAgeCrisis Club",
+        "acceptedPaymentMethods": [
+            "Visa"
+        ]
+    },
+    {
+        "policy": "MeetsAgeRangeLimit",
+        "minAge": 5,
+        "maxAge": 12,
+        "id": 4,
+        "name": "YouthDrawing Club",
+        "acceptedPaymentMethods": [
+            "Cash"
+        ]
+    }
+]
