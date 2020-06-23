@@ -52,7 +52,16 @@ To better suite your porject needs, ```AuthZyinProvide``` has great flexibility 
 - **Need to load context from your own api**: Pass your api url to the ```AuthZyinProvider``` options. The provider will load it from the URL (HTTP GET) for you.
 - **Use together with authzyin server library**: Everything is taken care of for you automatically. You might need to pass a ```requestInitFn``` async call back as part of the ```AuthZyinProvider``` options to customize the authentication.
 
+## Build and run locally
+```Shell
+# Build lib
+yarn install
+yarn build
 
+# build and run example
+cd example
+yarn start
+```
 
 # Happy coding. Peace.
 MIT © [sidecus](https://github.com/sidecus)
