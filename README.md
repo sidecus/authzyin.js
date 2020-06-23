@@ -28,7 +28,9 @@ npm install --save authzyin.js
     export const App = () => {
         if (signedIn) {
             return (
-                <AuthZyinProvider options={{ requestInitFn: getAuthorizationHeadersAsync }}>
+                <AuthZyinProvider options={
+                    { requestInitFn: getAuthorizationHeadersAsync }
+                }>
                     <MainContent />
                 </AuthZyinProvider>
             );
@@ -47,7 +49,7 @@ npm install --save authzyin.js
 ```
 
 ## AuthZyinProvider Flexibility
-To better suite your porject needs, ```AuthZyinProvide``` has great flexibility built in to initialize the authorization context (of type ```AuthZyinContext<T>```).
+To better suite your project needs, ```AuthZyinProvide``` also provides some flexibilities to initialize the authorization context (of type ```AuthZyinContext<T>```).
 - **Already loaded the context before hand**: Pass your context object to the ```initializeAuthZyinContext``` method. ```AuthZyinProvider``` will simply use it as is.
 - **Need to load context from your own api**: Pass your api url to the ```AuthZyinProvider``` options. The provider will load it from the URL (HTTP GET) for you.
 - **Use together with authzyin server library**: Everything is taken care of for you automatically. You might need to pass a ```requestInitFn``` async call back as part of the ```AuthZyinProvider``` options to customize the authentication.
