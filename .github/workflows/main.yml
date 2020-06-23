@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: BuildAndTest
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -25,10 +25,24 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    
+    # lib build and test
     - name: Build lib
       run: |
         yarn install
         yarn build
-    - name: Unit test
+    - name: Unit test lib
       run: |
         yarn test
+    
+    # sample build and deploy
+    - name: Build sample
+      run: |
+        cd example
+        yarn install
+        yarn build
+    - name: Deploy sample
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./example/build
