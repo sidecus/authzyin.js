@@ -2,14 +2,14 @@
 
 > Javascript library to enable policy based authorization in React.
 
+[![NPM](https://img.shields.io/npm/v/authzyin.js.svg)](https://www.npmjs.com/package/authzyin.js) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) ![CI](https://github.com/sidecus/authzyin.js/workflows/CI/badge.svg)
+
 This library enables [policy based authorization](https://docs.microsoft.com/en-us/aspnet/core/security/authorization/policies?view=aspnetcore-3.1) in React. It supports various types of policy/requirement evaluations leveraging JSON path.
 
 Simply define your policies, initialize and authorize!
 
 There is also a server library [authzyin](https://github.com/sidecus/authzyin). Using **authzyin.js** together with **authzyin** can further simplify your authorization story across server and client.
 
-
-[![NPM](https://img.shields.io/npm/v/authzyin.js.svg)](https://www.npmjs.com/package/authzyin.js) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) ![CI](https://github.com/sidecus/authzyin.js/workflows/CI/badge.svg)
 
 ## Install
 ```Shell
