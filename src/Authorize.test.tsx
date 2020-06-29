@@ -1,4 +1,5 @@
-import { authorize, useAuthorize } from './Authorize';
+import * as React from 'react';
+import { authorizeFunc, useAuthorize, Authorize } from './Authorize';
 import { AuthZyinContext } from './AuthZyinContext';
 import { OperatorType, Direction } from './Requirements';
 import { getAuthZyinContextWrapper } from './AuthZyinProvider.test';
@@ -61,7 +62,7 @@ const contextWithoutPolicies = {
 } as AuthZyinContext<typeof data>;
 
 it('authorize fails on candrink with no policies', () => {
-    expect(authorize(contextWithoutPolicies, 'candrink', resource)).toBeFalsy();
+    expect(authorizeFunc(contextWithoutPolicies, 'candrink', resource)).toBeFalsy();
 });
 
 const contextWithNoMatchingPolicy = {
@@ -82,7 +83,7 @@ describe('authorize function behaves correctly', () => {
         [contextWithNoMatchingPolicy,   'candrink', false],
     ])('authorize behavior (%#)', (context: AuthZyinContext, policy: string, expectedResult: boolean) =>
     {
-        expect(authorize(context, policy, resource)).toBe(expectedResult);
+        expect(authorizeFunc(context, policy, resource)).toBe(expectedResult);
     });
 });
 
@@ -105,3 +106,38 @@ describe('useAuthorize hook works as expected', () => {
         }
     );
 });
+
+// Make sure the Authorize component works as expected
+describe('Authorize component works as expected', () => {
+    test.each([
+        [context,                       'candrink', true],
+        [context,                       'canpay',   false],
+        [context,                       'canpay',   false],
+        [contextWithoutPolicies,        'candrink', false],
+        [contextWithNoMatchingPolicy,   'candrink', false],
+    ])(
+        'Authorize behavior (%#)',
+        async (context: AuthZyinContext, policy: string, expectedResult: boolean) =>
+        {
+            const wrapper = getAuthZyinContextWrapper(context, {});
+            const props = {
+                policy,
+                resource,
+                children: (authorized: boolean) => {
+                    return <>{authorized}</>;
+                }
+            };
+
+            // Just being lazy here to use renderHook to test a functional component - it works for our case though.
+            const { result } = renderHook(Authorize, { wrapper, initialProps: props });
+            expect(result.error).toBeUndefined();
+
+            // Checking to make sure the children is rendered as expected (ReactFragment here)
+            expect(result.current.type === React.Fragment).toBeTruthy();
+
+            // Checking ot make sure the authorization happens correctly (we set it direclty as the children of the ReactFragment)
+            expect(result.current.props.children).toEqual(expectedResult);
+        }
+    );
+});
+

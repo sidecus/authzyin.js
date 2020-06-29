@@ -22,7 +22,7 @@ npm install --save authzyin.js
     // Initialize context
     initializeAuthZyinContext();
 ```
-2. Wrap your main component with ```AuthZyinProvider``` like below.
+2. Wrap your main component with ```AuthZyinProvider``` (similar as ```Provider``` in Redux, should be at the top of your component hierarchy right after authentication).
 ```TSX
     // Wrap main content with AuthZyinProvider after signing in
     export const App = () => {
@@ -47,6 +47,19 @@ npm install --save authzyin.js
     // policy + resource + user based
     const barAuthorized = authorize('CanEnterBar' /*policy*/, bar /*resource*);
 ```
+If you are using class components and for whaterver reason cannot use the ```useAuthorize``` hook, you can use the built in ```Authorize``` component instead. It uses [React render props](https://reactjs.org/docs/render-props.html) to pass the authorization result to a children function to render as below:
+```TSX
+        <Authorize policy={'CanEnterBar'} resource={bar}>
+        {
+            // Below function is used as the "render props" children to Authorize.
+            (authorized) => {
+                // You can now use the authorized result in your components
+                return <><YourComponentsUsingTheAuthorizationResult/></>;
+            }
+        }
+        </Authorize>
+```
+The sample [PlaceComponent](https://github.com/sidecus/authzyin.js/blob/master/example/src/components/PlaceComponent.tsx) shows usage of both patterns.
 
 ## AuthZyinProvider Flexibility
 To better suite your project needs, ```AuthZyinProvide``` also provides some flexibilities to initialize the authorization context (of type ```AuthZyinContext<T>```).

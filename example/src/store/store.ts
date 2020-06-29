@@ -28,11 +28,14 @@ export interface AlertState {
 }
 
 /* ====================== Reducer definition =============================*/
-
 /**
  * place state reducer
  */
-const placeStateReducer = createSlicedReducer({currentPlace: -1} as PlaceState, {
+const defaultPlaceState: PlaceState = {
+    places: [],
+    currentPlace: -1
+};
+const placeStateReducer = createSlicedReducer(defaultPlaceState, {
     [SampleActions.SetPlaces]: [
         (state: PlaceState, action: SetPlacesAction) => {
             return {...state, places: action.payload, currentPlace: -1};
@@ -48,7 +51,11 @@ const placeStateReducer = createSlicedReducer({currentPlace: -1} as PlaceState, 
 /**
  * Alert reducer
  */
-const alertReducer = createSlicedReducer({severity: Severity.Info, message: 'Which place do you want to go?'} as AlertState, {
+const defaultAlertState: AlertState = {
+    severity: Severity.Info,
+    message: 'Which place do you want to go?'
+};
+const alertReducer = createSlicedReducer(defaultAlertState, {
     [SampleActions.SetAlert]: [
         (state: AlertState, action: SetAlertAction) => {
             return {...state, ...action.payload};
