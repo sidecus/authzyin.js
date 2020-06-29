@@ -74,7 +74,7 @@ export interface AuthZyinProviderOptions {
     jsonPathPropToCamelCase: boolean;
 }
 
-const defaultOptions: Partial<AuthZyinProviderOptions> = {
+const defaultOptions: AuthZyinProviderOptions = {
     url: contextApiUrl,
     requestInitFn: () => Promise.resolve({}),
     jsonPathPropToCamelCase: true
@@ -87,13 +87,13 @@ const defaultOptions: Partial<AuthZyinProviderOptions> = {
 export const AuthZyinProvider = <TData extends object = object>(
     props: PropsWithChildren<{ options?: Partial<AuthZyinProviderOptions> }>
 ): JSX.Element => {
-    const [context, setContext] = useState({} as AuthZyinContext<TData>);
+    const [context, setContext] = useState<AuthZyinContext<TData>>();
 
     // useAuthZyinContext here will return the defaultValue set by initializeAuthZyinContext
-    const defaultAuthZyinContext = useAuthZyinContext<TData>();
+    const defaultContext = useAuthZyinContext<TData>();
 
     useEffect(() => {
-        const options = { ...defaultOptions, ...props?.options } as AuthZyinProviderOptions;
+        const options: AuthZyinProviderOptions = { ...defaultOptions, ...props?.options };
 
         const handleContext = (contextToSave: AuthZyinContext<TData>) => {
             if (options.jsonPathPropToCamelCase) {
@@ -119,9 +119,9 @@ export const AuthZyinProvider = <TData extends object = object>(
             }
         };
 
-        if (defaultAuthZyinContext) {
+        if (defaultContext) {
             // If a default value is provided in initializeAuthZyinContext, use it
-            handleContext(defaultAuthZyinContext);
+            handleContext(defaultContext);
         } else {
             // No default value provided. Load it from server instead.
             fetcAndHandleContext();

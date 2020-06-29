@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Resource } from './Resource';
 import { AuthZyinContext } from './AuthZyinContext';
 import { evaluateRequirement } from './RequirementEvaluator';
@@ -9,11 +10,7 @@ import { useAuthZyinContext } from './AuthZyinProvider';
  * @param policy - the policy to authorize against
  * @param resource - resource, optional depending  on the policy and requirement
  */
-export const authorize = <TData extends object = object>(
-    context: AuthZyinContext<TData>,
-    policy: string,
-    resource?: Resource
-) => {
+export const authorizeFunc = (context: AuthZyinContext<object>, policy: string, resource?: Resource) => {
     if (!context || !context.policies) {
         // Incorrect context
         return false;
@@ -42,9 +39,32 @@ export const authorize = <TData extends object = object>(
  * Authorization hooks, returns a convenient authorize method you can use in your component.
  * An always false func is returned when context is not initialized.
  */
-export const useAuthorize = <TData extends object = object>() => {
-    const context = useAuthZyinContext<TData>();
+export const useAuthorize = () => {
+    const context = useAuthZyinContext<object>();
     return (policy: string, resource?: Resource) => {
-        return context && context.userContext && authorize(context, policy, resource);
+        return context && context.userContext && authorizeFunc(context, policy, resource);
     };
+};
+
+// Use React render props (with children as the render props function)
+interface AuthorizeProps {
+    policy: string;
+    resource?: Resource;
+    children: (authorized: boolean) => JSX.Element;
+}
+
+/**
+ * Authorize component which can be used to authorize without hooks.
+ */
+export const Authorize = (props: AuthorizeProps) => {
+    const authorize = useAuthorize();
+
+    if (!props?.children) {
+        return <></>;
+    }
+
+    const authorized = authorize(props.policy, props.resource);
+
+    // Render children using render props and passing in the authorization result
+    return props.children(authorized);
 };
