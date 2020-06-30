@@ -1,0 +1,14 @@
+# documents
+**/*.yml
+**/*.md
+**/Dockerfile
+
+# build objects
+**/obj
+**/bin
+**/node_modules
+**/build
+**/.vscode
+**/.github
+**/.git
+**/dist
