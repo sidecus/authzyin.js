@@ -18,12 +18,12 @@ npm install --save authzyin.js
 
 ## Usage
 1. Initialize ```AuthZyinContext``` (similar as ```createStore``` in Redux, call this globally).
-```TSX
+```typescript
     // Initialize context
     initializeAuthZyinContext();
 ```
 2. Wrap your main component with ```AuthZyinProvider``` (similar as ```Provider``` in Redux, should be at the top of your component hierarchy right after authentication).
-```TSX
+```typescript
     // Wrap main content with AuthZyinProvider after signing in
     export const App = () => {
         if (signedIn) {
@@ -38,7 +38,7 @@ npm install --save authzyin.js
     }
 ```
 3. Now you can call the ```useAuthorize``` hook to achieve policy based authorization in your components like below.
-```TSX
+```typescript
     const authorize = useAuthorize();
 
     // pure policy + user based
@@ -48,16 +48,16 @@ npm install --save authzyin.js
     const barAuthorized = authorize('CanEnterBar' /*policy*/, bar /*resource*);
 ```
 If you are using class components and for whaterver reason cannot use the ```useAuthorize``` hook, you can use the built in ```Authorize``` component instead. It uses [React render props](https://reactjs.org/docs/render-props.html) to pass the authorization result to a children function to render as below:
-```TSX
-        <Authorize policy={'CanEnterBar'} resource={bar}>
-        {
-            // Below function is used as the "render props" children to Authorize.
-            (authorized) => {
-                // You can now use the authorized result in your components
-                return <><YourComponentsUsingTheAuthorizationResult/></>;
-            }
+```typescript
+    <Authorize policy={'CanEnterBar'} resource={bar}>
+    {
+        // Below function is used as the "render props" children to Authorize.
+        (authorized) => {
+            // You can now use the authorized result in your components
+            return <><YourComponentsUsingTheAuthorizationResult/></>;
         }
-        </Authorize>
+    }
+    </Authorize>
 ```
 The sample [PlaceComponent](https://github.com/sidecus/authzyin.js/blob/master/example/src/components/PlaceComponent.tsx) shows usage of both patterns.
 
@@ -68,7 +68,7 @@ To better suite your project needs, ```AuthZyinProvide``` also provides some fle
 - **Use together with authzyin server library**: Everything is taken care of for you automatically. You might need to pass a ```requestInitFn``` async call back as part of the ```AuthZyinProvider``` options to customize the authentication.
 
 ## Build and run locally
-```Shell
+```bash
 # Build lib
 yarn install
 yarn build
@@ -76,6 +76,11 @@ yarn build
 # build and run example
 cd example
 yarn start
+```
+Or use docker:
+```bash
+docker build -t authzyin.js .
+docker run -p 8080:80 authzyin.js
 ```
 
 # Happy coding. Peace.
