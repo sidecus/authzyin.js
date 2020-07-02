@@ -12,7 +12,7 @@
             ],
             "runtimeExecutable": "yarn",
             "skipFiles": [
-                "**/node_modules/**"
+                "**/node_modules"
             ],
             "type": "pwa-node",
             "cwd": "${workspaceFolder}/example"
