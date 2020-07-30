@@ -54,6 +54,12 @@ const resource = {
     }
 };
 
+const contextWithNoUserContext:AuthZyinContext = {
+    userContext: undefined!,
+    policies: [],
+    data: {}
+};
+
 const contextWithoutPolicies = {
     userContext: {
         roles: ['someOtherRole', 'rightRole']
@@ -76,12 +82,13 @@ const contextWithNoMatchingPolicy = {
 // Test authorize behavior based on different inputs
 describe('authorize function behaves correctly', () => {
     test.each([
+        [undefined,                     'candrink', false],
+        [contextWithNoUserContext,      'candrink', false],
         [context,                       'candrink', true],
-        [context,                       'canpay',   false],
         [context,                       'canpay',   false],
         [contextWithoutPolicies,        'candrink', false],
         [contextWithNoMatchingPolicy,   'candrink', false],
-    ])('authorize behavior (%#)', (context: AuthZyinContext, policy: string, expectedResult: boolean) =>
+    ])('authorize behavior (%#)', (context: AuthZyinContext | undefined, policy: string, expectedResult: boolean) =>
     {
         expect(authorizeFunc(context, policy, resource)).toBe(expectedResult);
     });

@@ -9,43 +9,49 @@ import { camelCaseContext } from './PropNameCamelCase';
 const contextApiUrl = '/authzyin/context';
 
 /**
- * Global reference of the authorization React context object
+ * Global variable of the authorization React context object
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let AuthZyinReactContext: React.Context<any>;
+let AuthZyinReactContext: React.Context<AuthZyinContext<object> | undefined> | undefined;
 
 /**
  * Function to initialize the authorization React context - similar as createStore from redux.
  * Call this in your app startup (e.g. index.tsx).
- * @param context - optional AuthZyin context object. Only pass the param when you want to initialize your context manually.
+ * @param context - optional AuthZyin context object. Pass this parameter when you already have the context data required for authorization
+ * before calling this and don't want to rely an separate api call to load it.
  */
-export const initializeAuthZyinContext = <TData extends object = object>(context?: AuthZyinContext<TData>) => {
+export const initializeAuthZyinContext = (context?: AuthZyinContext<object>) => {
     if (AuthZyinReactContext) {
         throw new Error('AuthZyin React context is already initialized.');
     }
 
     // Create the React context wrapping around the context object
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    AuthZyinReactContext = React.createContext<AuthZyinContext<TData>>(context!);
+    AuthZyinReactContext = React.createContext<AuthZyinContext<object> | undefined>(context);
 };
 
 /**
  * This is for testing only - to reset the global reference to the React context;
  */
 export const resetAuthZyinContext = () => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    AuthZyinReactContext = undefined!;
+    AuthZyinReactContext = undefined;
 };
 
 /**
- * Hooks to read AuthZyinContext object from React context (e.g. to access basic user info or policies)
+ * Assertion for better type checking
+ * @param condition condition to assert on
  */
-export const useAuthZyinContext = <TData extends object = object>() => {
-    const reactContext = AuthZyinReactContext as React.Context<AuthZyinContext<TData>>;
-    if (!reactContext) {
+function assert(condition: unknown): asserts condition {
+    if (!condition) {
         throw new Error('AuthZyin React context is not setup. Call createAuthZyinContext first.');
     }
+}
 
+/**
+ * Hooks to read AuthZyinContext object from React context (e.g. to access basic user info or policies)
+ * @template TData Data type for AuthZyinContext
+ */
+export const useAuthZyinContext = <TData extends object = object>() => {
+    assert(AuthZyinReactContext !== undefined);
+    const reactContext = AuthZyinReactContext as React.Context<AuthZyinContext<TData> | undefined>;
     return React.useContext(reactContext);
 };
 
@@ -84,18 +90,18 @@ const defaultOptions: AuthZyinProviderOptions = {
  * HOC component which sets the authorization React context - similar as Provider from redux
  * @param props - props to specify various options for the provider behavior. refer to AuthZyinProviderOptions.
  */
-export const AuthZyinProvider = <TData extends object = object>(
+export const AuthZyinProvider = (
     props: PropsWithChildren<{ options?: Partial<AuthZyinProviderOptions> }>
 ): JSX.Element => {
-    const [context, setContext] = useState<AuthZyinContext<TData>>();
+    const [context, setContext] = useState<AuthZyinContext<object>>();
 
-    // useAuthZyinContext here will return the defaultValue set by initializeAuthZyinContext
-    const defaultContext = useAuthZyinContext<TData>();
+    // useAuthZyinContext call here returns the defaultValue set by initializeAuthZyinContext
+    const defaultContext = useAuthZyinContext<object>();
 
     useEffect(() => {
         const options: AuthZyinProviderOptions = { ...defaultOptions, ...props?.options };
 
-        const handleContext = (contextToSave: AuthZyinContext<TData>) => {
+        const handleContext = (contextToSave: AuthZyinContext<object>) => {
             if (options.jsonPathPropToCamelCase) {
                 // Convert property names in JSON path to camel case
                 camelCaseContext(contextToSave);
@@ -112,7 +118,7 @@ export const AuthZyinProvider = <TData extends object = object>(
             // Call the context api from server to get the context data
             const response = await fetch(options.url, request);
             if (response.ok) {
-                const result = (await response.json()) as AuthZyinContext<TData>;
+                const result = (await response.json()) as AuthZyinContext<object>;
                 handleContext(result);
             } else {
                 throw new Error(`AuthZyinContext loading error: ${response.status}`);
@@ -127,6 +133,10 @@ export const AuthZyinProvider = <TData extends object = object>(
             fetcAndHandleContext();
         }
     }, [props]);
+
+    // Assertion to ensure React context has already been initialized. This has already been coverd by the
+    // useAuthZyinContext call above but still having to repeat it here to make TS happy for the below JSX element usage.
+    assert(AuthZyinReactContext !== undefined);
 
     // Return children components wrapped with proper React context.
     // Children are only rendered when context is set correctly.

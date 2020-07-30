@@ -95,7 +95,7 @@ describe('initializeAuthZyinContext/useAuthZyinContext', () => {
             const { result } = renderHook(useAuthZyinContext, { wrapper });
             expect(!result.error).toBeTruthy();
             expect(result.current).toBe(contextValue);
-            const resultRequirement = result.current.policies[0].requirements[0] as JsonPathConstantRequiremet;
+            const resultRequirement = result.current!.policies[0].requirements[0] as JsonPathConstantRequiremet;
             expect(resultRequirement.dataJPath).toBe(expectedDataPath);
             expect(resultRequirement.resourceJPath).toBe(expectedResourcePath);
             expect(resultRequirement.constValue).toBe(DummyRequirement.constValue);
@@ -120,10 +120,10 @@ describe('initializeAuthZyinContext/useAuthZyinContext', () => {
             await waitForNextUpdate();
 
             expect(!result.error).toBeTruthy();
-            expect(result.current.policies.length).toBe(1);
-            expect(result.current.policies[0].name).toBe(DummyPolicy.name);
-            expect(result.current.policies[0].requirements.length).toBe(DummyPolicy.requirements.length);
-            const resultRequirement = result.current.policies[0].requirements[0] as JsonPathConstantRequiremet;
+            expect(result.current!.policies.length).toBe(1);
+            expect(result.current!.policies[0].name).toBe(DummyPolicy.name);
+            expect(result.current!.policies[0].requirements.length).toBe(DummyPolicy.requirements.length);
+            const resultRequirement = result.current!.policies[0].requirements[0] as JsonPathConstantRequiremet;
             expect(resultRequirement.operator).toBe(DummyRequirement.operator);
             expect(resultRequirement.direction).toBe(DummyRequirement.direction);
             expect(resultRequirement.dataJPath).toBe(expectedDataPath);

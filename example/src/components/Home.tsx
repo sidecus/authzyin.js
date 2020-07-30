@@ -9,6 +9,10 @@ import { AuthorizationData } from '../api/Contract';
 export const Home = () => {
     const context = useAuthZyinContext<AuthorizationData>();
 
+    if (!context) {
+        return <></>;
+    }
+
     return (
         <div>
             <Typography variant="h2" component="h2">
