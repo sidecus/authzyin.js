@@ -10,23 +10,20 @@ import { useAuthZyinContext } from './AuthZyinProvider';
  * @param policy - the policy to authorize against
  * @param resource - resource, optional depending  on the policy and requirement
  */
-export const authorizeFunc = (context: AuthZyinContext<object>, policy: string, resource?: Resource) => {
-    if (!context || !context.policies) {
+export const authorizeFunc = (context: AuthZyinContext<object> | undefined, policy: string, resource?: Resource) => {
+    if (!context || !context.userContext || !context.policies) {
         // Incorrect context
         return false;
     }
 
     const policyObject = context.policies.filter((p) => p.name === policy)[0];
-
     if (!policyObject || !policyObject.requirements) {
         // Cannot find policy
         return false;
     }
 
-    const requirements = policyObject.requirements;
-    let result = true;
-    for (let i = 0; i < requirements.length; i++) {
-        result = evaluateRequirement(context, requirements[i], resource);
+    for (const requirement of policyObject.requirements) {
+        const result = evaluateRequirement(context, requirement, resource);
         if (!result) {
             return false; // requirement failed, no need to continue
         }
@@ -42,7 +39,7 @@ export const authorizeFunc = (context: AuthZyinContext<object>, policy: string, 
 export const useAuthorize = () => {
     const context = useAuthZyinContext<object>();
     return (policy: string, resource?: Resource) => {
-        return context && context.userContext && authorizeFunc(context, policy, resource);
+        return authorizeFunc(context, policy, resource);
     };
 };
 
